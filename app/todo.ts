@@ -18,6 +18,7 @@ export const CARDS: Array<ICard> = [
     comments: [1, 2, 3, 4],
     files: [1, 2],
   },
+
   {
     id: 2,
     type: 'todo',
@@ -42,7 +43,8 @@ export const CARDS: Array<ICard> = [
     },
     people: [
       'images/Ellipse-1.png',
-      'images/Ellipse-3.png, images/Ellipse-4.png',
+      'images/Ellipse-3.png',
+      'images/Ellipse-4.png',
     ],
     comments: [1, 2, 3, 4, 5],
     files: [1, 2, 3, 4, 5, 6, 7, 8],

@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -23,7 +22,7 @@ body {
   background-color: transparent;
 }
 ::-webkit-scrollbar {
-  width: 2px;
+  width: 0.5px;
 }
 
 ::-webkit-scrollbar-track {

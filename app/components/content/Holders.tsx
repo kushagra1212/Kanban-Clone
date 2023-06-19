@@ -1,92 +1,38 @@
-import { ICard } from '@/app/types';
 import { DotSVG } from '../SideBar';
-import { Seprarator } from '../jsx-svgs/Seprator';
-
 type Props = {
-  children: React.ReactNode;
-  cards?: Array<ICard>;
+  renderCard: React.ReactNode;
+  type: 'To Do' | 'On Progress' | 'Done';
+  numberOfItems: number;
+  color: '#5030E5' | '#76A5EA' | '#FFA500';
 };
 
-export const ToDoCardHolder: React.FC<Props> = ({ children, cards }) => {
+export const CardHolder: React.FC<Props> = ({
+  renderCard,
+  numberOfItems,
+  type,
+  color,
+}) => {
   return (
-    <div className="w-[354px] h-full   rounded-tr-2xl rounded-tl-2xl bg-neutral-100">
-      <div className="flex flex-row justify-between m-5">
-        <div className="flex flex-row items-center justify-between w-24">
-          <DotSVG color="#5030E5" />
-          <p className="text-base font-medium text-left text-[#0d062d]">
-            To Do
-          </p>
-          <div className="w-5 h-5 rounded-[10px] bg-[#e0e0e0] flex flex-row items-center justify-center">
-            <p className="text-xs font-medium text-left text-[#625f6d]">
-              {cards?.length}
-            </p>
-          </div>
-        </div>
-        <img src="svgs/todo-list/add.svg" />
-      </div>
-      <div className="m-5">
-        <Seprarator color="#5030E5" />
-      </div>
-      <div
-        suppressHydrationWarning
-        className="max-h-[355px] overflow-hidden hover:overflow-y-scroll flex flex-col justify-between items-center "
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
-export const OnProgressCardHolder: React.FC<Props> = ({ children, cards }) => {
-  return (
-    <div className="w-[354px] h-full   rounded-tr-2xl rounded-tl-2xl bg-neutral-100">
+    <div className=" rounded-tr-2xl sm:h-full   rounded-tl-2xl bg-neutral-100 w-full ">
       <div className="flex flex-row justify-between ml-5 mt-5">
-        <div className="flex flex-row items-center justify-between w-36">
-          <DotSVG color="#FFA500" />
+        <div className="flex flex-row items-center justify-between space-x-5">
+          <DotSVG color={color} />
           <p className="text-base font-medium text-left text-[#0d062d]">
-            On Progress
+            {type}
           </p>
           <div className="w-5 h-5 rounded-[10px] bg-[#e0e0e0] flex flex-row items-center justify-center">
             <p className="text-xs font-medium text-left text-[#625f6d]">
-              {cards?.length}
+              {numberOfItems}
             </p>
           </div>
         </div>
+        {type === 'To Do' ? (
+          <img className="mr-5" src="svgs/todo-list/add.svg" />
+        ) : null}
       </div>
-      <div className="m-5">
-        <Seprarator color="#FFA500" />
-      </div>
-      <div
-        suppressHydrationWarning
-        className="h-[355px] overflow-hidden hover:overflow-y-scroll flex flex-col justify-between items-center  "
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
-export const DoneCardHolder: React.FC<Props> = ({ children, cards }) => {
-  return (
-    <div className="w-[354px] h-full   rounded-tr-2xl rounded-tl-2xl bg-neutral-100">
-      <div className="flex flex-row justify-between m-5">
-        <div className="flex flex-row items-center justify-between w-24">
-          <DotSVG color="#76A5EA" />
-          <p className="text-base font-medium text-left text-[#0d062d]">Done</p>
-          <div className="w-5 h-5 rounded-[10px] bg-[#e0e0e0] flex flex-row items-center justify-center">
-            <p className="text-xs font-medium text-left text-[#625f6d]">
-              {' '}
-              {cards?.length}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="m-5">
-        <Seprarator color="#76A5EA" />
-      </div>
-      <div
-        suppressHydrationWarning
-        className="h-[355px] overflow-hidden hover:overflow-y-scroll flex flex-col justify-between items-center "
-      >
-        {children}
+      <div className={`m-5 h-1 bg-[${color}]`}></div>
+      <div className="overflow-scroll space-y-5 h-full sm:pb-20 flex sm:pb:20 flex-col  items-center ">
+        {renderCard}
       </div>
     </div>
   );

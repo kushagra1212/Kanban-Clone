@@ -1,7 +1,7 @@
 const FilterSection = () => {
   return (
-    <div className="flex flex-row bg-white h-16 items-center justify-between">
-      <div className="flex flex-row items-center justify-between ml-10">
+    <div className="sm:flex sm:flex-row flex flex-col sm:mt-5  sm:items-center sm:justify-between justify-start items-start mt-5">
+      <div className="flex flex-row items-center justify-between ">
         <button
           className="flex flex-row justify-around items-center  w-32 border rounded-md border-gray-500"
           style={{ width: 122, height: 40 }}
@@ -27,7 +27,7 @@ const FilterSection = () => {
           <img src="down-arrow.svg" />
         </button>
       </div>
-      <div className="flex flex-row justify-around w-1/5  ">
+      <div className="sm:flex sm:flex-row sm:mt-0 mt-5 flex flex-row justify-between space-x-5  ">
         <button className="w-[97px] h-10 border rounded-md border-gray-500 flex flex-row items-center justify-around">
           <img src="share.svg" />
           <p className="text-base font-medium text-left capitalize text-[#787486]">
