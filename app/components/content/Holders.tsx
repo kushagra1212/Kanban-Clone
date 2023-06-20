@@ -1,7 +1,6 @@
 import { DotSVG } from '../SideBar';
 
 import { useDrop, useDragLayer } from 'react-dnd';
-import { CustomDragLayer } from './cards/BaseCard';
 type Props = {
   renderCard: React.ReactNode;
   type: 'To Do' | 'On Progress' | 'Done';
@@ -17,21 +16,8 @@ export const CardHolder: React.FC<Props> = ({
   type,
   color,
 }) => {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: ItemTypes.CARD,
-    drop: (item) => {
-      console.log('drop', item);
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  }));
-
   return (
-    <div
-      ref={drop}
-      className=" rounded-tr-2xl sm:h-full   rounded-tl-2xl bg-neutral-100 w-full "
-    >
+    <div className=" rounded-tr-2xl sm:h-full   rounded-tl-2xl bg-neutral-100 w-full ">
       <div className="flex flex-row justify-between ml-5 mt-5">
         <div className="flex flex-row items-center justify-between space-x-5">
           <DotSVG color={color} />

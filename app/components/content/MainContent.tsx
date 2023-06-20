@@ -1,17 +1,20 @@
 'use client';
-import { CARDS } from '@/app/todo';
-import ContentHeader from './ContentHeader';
+
 import { CardHolder } from './Holders';
-import { getCards } from '../utils';
 import BaseCard, { CustomDragLayer } from './cards/BaseCard';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import instance from '../../hooks/ManageCards';
+import MainContext from '../context/MainContext';
+import { CARDS } from '@/app/todo';
+import useManageCards from '../../hooks/ManageCards';
+import { memo, useContext } from 'react';
 
-const MainContent = () => {
-  const todoCards = getCards('todo');
-  const progressCards = getCards('progress');
-  const doneCard = getCards('done');
-
+const MainContent = memo(() => {
+  const { getCardsByType } = useContext(MainContext);
+  const todoCards = getCardsByType('todo');
+  const progressCards = getCardsByType('progress');
+  const doneCard = getCardsByType('done');
   return (
     <DndProvider backend={HTML5Backend}>
       <div className=" relative h-full  sm:space-x-5  pt-5 overflow-x-auto    sm:overflow-y-hidden overflow-y-auto space-y-9  sm:space-y-0 flex sm:flex-row flex-col   absoluteshadow-xl ">
@@ -20,7 +23,7 @@ const MainContent = () => {
           type="To Do"
           color="#5030E5"
           renderCard={todoCards.map((card, index) => (
-            <BaseCard key={index} card={card} />
+            <BaseCard key={card.id} card={card} />
           ))}
         />
         <CardHolder
@@ -28,7 +31,7 @@ const MainContent = () => {
           type="On Progress"
           color="#76A5EA"
           renderCard={progressCards.map((card, index) => (
-            <BaseCard key={index} card={card} />
+            <BaseCard key={card.id} card={card} />
           ))}
         />
         <CardHolder
@@ -36,12 +39,12 @@ const MainContent = () => {
           type="Done"
           color="#FFA500"
           renderCard={doneCard.map((card, index) => (
-            <BaseCard key={index} card={card} />
+            <BaseCard key={card.id} card={card} />
           ))}
         />
       </div>
     </DndProvider>
   );
-};
+});
 
 export default MainContent;

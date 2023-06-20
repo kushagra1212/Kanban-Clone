@@ -1,15 +1,9 @@
 'use client';
 import { ICard } from '@/app/types';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useDrag, useDragLayer, DragPreviewImage } from 'react-dnd';
+import { useContext, useMemo } from 'react';
+import { useDrag, useDragLayer, DragPreviewImage, useDrop } from 'react-dnd';
 import { ItemTypes } from '../Holders';
+import MainContext from '../../context/MainContext';
 const Priority = ({
   priority,
   ...props
@@ -86,11 +80,8 @@ const ImageCompoent = ({
   );
 };
 
-const throtalXandYCoorinates = (x: number, y: number) => {
-  return [Math.round(x / 20) * 20, Math.round(y / 20) * 20];
-};
-
 export const CustomDragLayer = () => {
+  const { getCardById } = useContext(MainContext);
   const { dragging, item, currentOffset } = useDragLayer((monitor) => {
     return {
       dragging: monitor.isDragging(),
@@ -99,8 +90,8 @@ export const CustomDragLayer = () => {
     };
   });
   if (!dragging || !currentOffset || !item) return null;
-  const card = item.card;
-
+  const card = getCardById(item.id);
+  if (!card) return null;
   return (
     <div
       style={{
@@ -108,116 +99,23 @@ export const CustomDragLayer = () => {
         top: currentOffset.y,
         zIndex: 100,
         position: 'fixed',
-        pointerEvents: dragging ? 'none' : 'visible',
-        cursor: 'none',
+        pointerEvents: 'none',
+        boxShadow: '0.5px 0.5px 10px 1px rgba(220,220,220,0.5)',
       }}
+      className="relative ml-0 p-1 mr-0 w-[300px] hover:cursor-pointer rounded-2xl bg-white "
     >
-      <div className="relative ml-5 p-1 mr-5 w-[300px] hover:cursor-pointer rounded-2xl bg-white ">
-        <Priority priority={card.priority} />
-        <p className="ml-5 mr-5 mt-2 text-lg  font-semibold text-left text-[#0d062d]">
-          {card.title}
-        </p>
-        {card.content.isText ? (
-          <TextContent text={card.content.text} />
-        ) : (
-          <ImageCompoent images={card.content.images} />
-        )}
-        <div className="flex flex-row mt-7 justify-between">
-          <div className=" relative flex flex-row  w-16 ml-5 ">
-            {card.people.map((image, index) => {
-              const left = `${16 * index}px`;
-              const zIndex = `${10 * (3 - index)}`;
-
-              return (
-                <img
-                  key={index}
-                  style={{ left: left, zIndex: zIndex }}
-                  className="absolute  w-6 h-6 border rounded-full border-white"
-                  src={'/' + image}
-                />
-              );
-            })}
-          </div>
-
-          <div className="flex flex-row mt-1 relative mr-5 mb-5">
-            <div className="flex flex-row mr-5">
-              <img className="mr-2" src="/svgs/todo-list/comment.svg" />
-              <p className="text-[9px] lg:text-xs   font-medium text-left text-[#787486]">
-                {card.comments.length} comments
-              </p>
-            </div>
-            <div className="flex flex-row">
-              <img className="mr-2" src="/svgs/todo-list/file.svg" />
-              <p className=" text-[9px] lg:text-xs  font-medium text-left text-[#787486]">
-                {card.files.length} files
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const BaseCard = ({ card }: { card: ICard }) => {
-  const slicedPeople = useMemo(() => card.people.slice(0, 3), [card.people]);
-
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
-    type: ItemTypes.CARD,
-    item: {
-      card: card,
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-  const previewStyle = {
-    // Add the desired styles for the preview component
-  };
-
-  return (
-    <div
-      ref={drag}
-      style={{
-        backgroundColor: isDragging ? 'rgb(80 48 229 / 0.06)' : 'white',
-        border: isDragging ? '1px solid rgb(80 48 229 / 0.59)' : 'none',
-        borderRadius: isDragging ? '10px' : '16px',
-        borderStyle: isDragging ? 'dashed' : 'none',
-      }}
-      className="relative ml-5 mr-5 w-[300px] hover:cursor-pointer rounded-2xl bg-white "
-    >
-      <CustomDragLayer />
-      <DragPreviewImage
-        connect={preview}
-        src="https://upload.wikimedia.org/wikipedia/commons/8/89/HD_transparent_picture.png"
-      />
-      <Priority
-        style={{ opacity: isDragging ? 0 : 1 }}
-        priority={card.priority}
-      />
-      <p
-        style={{ opacity: isDragging ? 0 : 1 }}
-        className="ml-5 mr-5 mt-2 text-lg  font-semibold text-left text-[#0d062d]"
-      >
+      <Priority priority={card.priority} />
+      <p className="ml-5 mr-5 mt-2 text-lg  font-semibold text-left text-[#0d062d]">
         {card.title}
       </p>
       {card.content.isText ? (
-        <TextContent
-          style={{ opacity: isDragging ? 0 : 1 }}
-          text={card.content.text}
-        />
+        <TextContent text={card.content.text} />
       ) : (
-        <ImageCompoent
-          style={{ opacity: isDragging ? 0 : 1 }}
-          images={card.content.images}
-        />
+        <ImageCompoent images={card.content.images} />
       )}
-      <div
-        style={{ opacity: isDragging ? 0 : 1 }}
-        className="flex flex-row mt-7 justify-between"
-      >
+      <div className="flex flex-row mt-7 justify-between">
         <div className=" relative flex flex-row  w-16 ml-5 ">
-          {slicedPeople.map((image, index) => {
+          {card.people.map((image, index) => {
             const left = `${16 * index}px`;
             const zIndex = `${10 * (3 - index)}`;
 
@@ -232,10 +130,7 @@ const BaseCard = ({ card }: { card: ICard }) => {
           })}
         </div>
 
-        <div
-          style={{ opacity: isDragging ? 0 : 1 }}
-          className="flex flex-row mt-1 relative mr-5 mb-5"
-        >
+        <div className="flex flex-row mt-1 relative mr-5 mb-5">
           <div className="flex flex-row mr-5">
             <img className="mr-2" src="/svgs/todo-list/comment.svg" />
             <p className="text-[9px] lg:text-xs   font-medium text-left text-[#787486]">
@@ -247,6 +142,115 @@ const BaseCard = ({ card }: { card: ICard }) => {
             <p className=" text-[9px] lg:text-xs  font-medium text-left text-[#787486]">
               {card.files.length} files
             </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BaseCard = ({ card }: { card: ICard }) => {
+  const slicedPeople = card.people.slice(0, 3);
+  const { cards, moveCard } = useContext(MainContext);
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
+    type: ItemTypes.CARD,
+    item: {
+      id: card.id,
+    },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.CARD,
+    drop: (item: { id: number }, montior) => {
+      console.log('from', item.id, 'to', card.id);
+      moveCard(item.id, card.id);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+    hover(item, monitor) {
+      console.log('hovering', item.id, 'to', card.id);
+    },
+  }));
+  return (
+    <div
+      ref={drop}
+      className="ml-5 mr-5    w-[300px] hover:cursor-pointer rounded-2xl bg-white "
+    >
+      <div
+        ref={drag}
+        style={{
+          backgroundColor: isDragging ? 'rgb(80 48 229 / 0.06)' : 'white',
+          border: isDragging ? '1px solid rgb(80 48 229 / 0.59)' : 'none',
+          borderRadius: isDragging ? '10px' : '16px',
+          borderStyle: isDragging ? 'dashed' : 'none',
+        }}
+        className="relative pt-2   w-[300px] hover:cursor-pointer rounded-2xl bg-white "
+      >
+        <CustomDragLayer />
+        <DragPreviewImage
+          connect={preview}
+          src="https://upload.wikimedia.org/wikipedia/commons/8/89/HD_transparent_picture.png"
+        />
+        <Priority
+          style={{ opacity: isDragging ? 0 : 1 }}
+          priority={card.priority}
+        />
+        <p
+          style={{ opacity: isDragging ? 0 : 1 }}
+          className="ml-5 mr-5 mt-2 text-lg  font-semibold text-left text-[#0d062d]"
+        >
+          {card.title}
+        </p>
+        {card.content.isText ? (
+          <TextContent
+            style={{ opacity: isDragging ? 0 : 1 }}
+            text={card.content.text}
+          />
+        ) : (
+          <ImageCompoent
+            style={{ opacity: isDragging ? 0 : 1 }}
+            images={card.content.images}
+          />
+        )}
+        <div
+          style={{ opacity: isDragging ? 0 : 1 }}
+          className="flex flex-row mt-7 justify-between"
+        >
+          <div className=" relative flex flex-row  w-16 ml-5 ">
+            {slicedPeople.map((image, index) => {
+              const left = `${16 * index}px`;
+              const zIndex = `${10 * (3 - index)}`;
+
+              return (
+                <img
+                  key={index}
+                  style={{ left: left, zIndex: zIndex }}
+                  className="absolute  w-6 h-6 border rounded-full border-white"
+                  src={'/' + image}
+                />
+              );
+            })}
+          </div>
+
+          <div
+            style={{ opacity: isDragging ? 0 : 1 }}
+            className="flex flex-row mt-1 relative mr-5 mb-5"
+          >
+            <div className="flex flex-row mr-5">
+              <img className="mr-2" src="/svgs/todo-list/comment.svg" />
+              <p className="text-[9px] lg:text-xs   font-medium text-left text-[#787486]">
+                {card.comments.length} comments
+              </p>
+            </div>
+            <div className="flex flex-row">
+              <img className="mr-2" src="/svgs/todo-list/file.svg" />
+              <p className=" text-[9px] lg:text-xs  font-medium text-left text-[#787486]">
+                {card.files.length} files
+              </p>
+            </div>
           </div>
         </div>
       </div>

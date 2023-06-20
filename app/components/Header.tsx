@@ -1,4 +1,6 @@
-const Header = () => {
+import { memo } from 'react';
+
+const Header = memo(() => {
   return (
     <div className=" sm:flex sm:h-20 sm:pt-5 sm:pb-5 sm:w-full flex-col sm:flex-row  sm:relative sm:justify-between sm:items-center mt-5 sm:mt-0 ">
       <div className="flex  justify-start pl-4  pt-2.5 pb-3 bg-gray-100 border rounded-md sm:w-[417px] sm:h-[44px] ">
@@ -45,6 +47,6 @@ const Header = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Header;

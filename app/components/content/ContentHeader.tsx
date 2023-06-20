@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import FilterSection from './FilterSection';
 
-const ContentHeader = () => {
+const ContentHeader = memo(() => {
   return (
     <div className="sm:w-full  sm:pt-5 sm:pb-5">
       <div className="sm:flex sm:flex-row items-center justify-between ">
@@ -53,6 +54,6 @@ const ContentHeader = () => {
       <FilterSection />
     </div>
   );
-};
+});
 
 export default ContentHeader;

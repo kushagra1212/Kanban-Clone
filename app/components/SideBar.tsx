@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 export const DotSVG = ({
   color,
   ...rest
@@ -19,7 +21,7 @@ export const DotSVG = ({
     </svg>
   );
 };
-const Sidebar = () => {
+const Sidebar = memo(() => {
   return (
     <div
       className=" md:fixed w-1/5 md:w-1/5  bg-white   h-full
@@ -152,6 +154,6 @@ const Sidebar = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Sidebar;
