@@ -43,7 +43,7 @@ const useManageCards = ({ CARDS }: Props) => {
         JSON.stringify(prevCards[destinationIndex].type)
       );
       let newCards = [];
-      console.log(isAboveHalf);
+
       if (isAboveHalf) {
         for (let i = 0; i < prevCards.length; i++) {
           if (prevCards[i].id === toId) {
@@ -63,7 +63,7 @@ const useManageCards = ({ CARDS }: Props) => {
           }
         }
       }
-      console.log(newCards);
+
       return newCards;
     });
   };

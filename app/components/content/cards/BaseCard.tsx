@@ -178,7 +178,6 @@ const BaseCard = ({ card }: { card: ICard }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
     drop: (item: { id: number; heightOfDiv: number }, monitor) => {
-      console.log('from', item.id, 'to', card.id);
       const { top, height } = divRef.current.getBoundingClientRect();
       const mouseY = monitor.getClientOffset().y - top;
       const isAbove: boolean = mouseY < height / 2;
@@ -193,7 +192,7 @@ const BaseCard = ({ card }: { card: ICard }) => {
         const { top, height } = divRef.current.getBoundingClientRect();
         const mouseY = monitor.getClientOffset().y - top;
         const isAbove: boolean = mouseY < height / 2;
-        console.log(item.heightOfDiv);
+
         setHeightDiv(item.heightOfDiv);
         setIsaboveHalf(isAbove);
       }
