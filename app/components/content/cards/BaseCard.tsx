@@ -8,7 +8,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useDrag, useDragLayer, DragPreviewImage, useDrop } from 'react-dnd';
+import {
+  useDrag,
+  useDragLayer,
+  DragPreviewImage,
+  useDrop,
+  DropTargetMonitor,
+  XYCoord,
+} from 'react-dnd';
 import { ItemTypes } from '../Holders';
 import MainContext from '../../context/MainContext';
 const Priority = ({
@@ -159,8 +166,8 @@ export const CustomDragLayer = () => {
 const BaseCard = ({ card }: { card: ICard }) => {
   const slicedPeople = card.people.slice(0, 3);
 
-  const divRef = useRef(null);
-  const heightDivRef = useRef(null);
+  const divRef = useRef<HTMLDivElement | null>(null);
+  const heightDivRef = useRef<HTMLDivElement | null>(null);
   const [heightDiv, setHeightDiv] = useState<number>(0);
 
   const [isAboveHalf, setIsaboveHalf] = useState<boolean | null>(null);
@@ -177,24 +184,36 @@ const BaseCard = ({ card }: { card: ICard }) => {
   }));
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    drop: (item: { id: number; heightOfDiv: number }, monitor) => {
-      const { top, height } = divRef.current.getBoundingClientRect();
-      const mouseY = monitor.getClientOffset().y - top;
-      const isAbove: boolean = mouseY < height / 2;
+    drop: (
+      item: { id: number; heightOfDiv: number },
+      monitor: DropTargetMonitor<unknown, unknown>
+    ) => {
+      const clientOffset: XYCoord | null = monitor.getClientOffset();
 
-      moveCard(item.id, card.id, isAbove);
+      if (divRef.current && clientOffset) {
+        const { top, height } = divRef.current.getBoundingClientRect();
+
+        const mouseY = clientOffset.y - top;
+        const isAbove: boolean = mouseY < height / 2;
+
+        moveCard(item.id, card.id, isAbove);
+      }
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
     hover(item, monitor) {
       if (item.id !== card.id) {
-        const { top, height } = divRef.current.getBoundingClientRect();
-        const mouseY = monitor.getClientOffset().y - top;
-        const isAbove: boolean = mouseY < height / 2;
+        const clientOffset: XYCoord | null = monitor.getClientOffset();
 
-        setHeightDiv(item.heightOfDiv);
-        setIsaboveHalf(isAbove);
+        if (divRef.current && clientOffset) {
+          const { top, height } = divRef.current.getBoundingClientRect();
+          const mouseY = clientOffset.y - top;
+          const isAbove: boolean = mouseY < height / 2;
+
+          setHeightDiv(item.heightOfDiv);
+          setIsaboveHalf(isAbove);
+        }
       }
     },
   }));
