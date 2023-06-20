@@ -1,11 +1,15 @@
+import { useContext } from 'react';
 import { DotSVG } from '../SideBar';
 
 import { useDrop, useDragLayer } from 'react-dnd';
+import MainContext from '../context/MainContext';
 type Props = {
   renderCard: React.ReactNode;
   type: 'To Do' | 'On Progress' | 'Done';
   numberOfItems: number;
   color: '#5030E5' | '#76A5EA' | '#FFA500';
+
+  realType: string;
 };
 export const ItemTypes = {
   CARD: 'card',
@@ -15,9 +19,28 @@ export const CardHolder: React.FC<Props> = ({
   numberOfItems,
   type,
   color,
+  realType,
 }) => {
+  const { moveCardToType, getCardsByType } = useContext(MainContext);
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.CARD,
+    drop: (item: { id: number; heightOfDiv: number }, monitor) => {
+      moveCardToType(item.id, realType);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+    canDrop: (item: { id: number; heightOfDiv: number }) => {
+      const cards = getCardsByType(realType);
+      if (cards.length === 0) return true;
+      return false;
+    },
+  }));
   return (
-    <div className=" rounded-tr-2xl sm:h-full   rounded-tl-2xl bg-neutral-100 w-full ">
+    <div
+      ref={drop}
+      className=" rounded-tr-2xl sm:h-full   rounded-tl-2xl bg-neutral-100 w-full "
+    >
       <div className="flex flex-row justify-between ml-5 mt-5">
         <div className="flex flex-row items-center justify-between space-x-5">
           <DotSVG color={color} />
