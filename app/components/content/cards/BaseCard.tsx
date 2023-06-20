@@ -114,7 +114,7 @@ export const CustomDragLayer = () => {
         zIndex: 100,
         position: 'fixed',
         pointerEvents: 'none',
-        boxShadow: '0.5px 0.5px 10px 1px rgba(220,220,220,0.5)',
+        boxShadow: '1px 1px 2px 0.5px rgba(230,230,230,0.3)',
       }}
       className="relative ml-0 p-1 mr-0 w-[300px] hover:cursor-pointer rounded-2xl bg-white "
     >
@@ -241,7 +241,7 @@ const BaseCard = ({ card }: { card: ICard }) => {
               borderRadius: isDragging ? '10px' : '16px',
               borderStyle: isDragging ? 'dashed' : 'none',
             }}
-            className="relative pt-2   w-[300px] hover:cursor-pointer rounded-2xl bg-white "
+            className="relative pt-[2px]   w-[300px] hover:cursor-pointer rounded-2xl bg-white "
           >
             <CustomDragLayer />
             <DragPreviewImage
